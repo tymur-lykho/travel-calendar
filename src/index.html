@@ -7,10 +7,6 @@
     <title>Vanilla App Template</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <script type="module" src="./js/maps.js"></script>
-    <script
-      prefer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRqbfD4tRFZ-38qw05HcOWlWRQqoPfjYY"
-    ></script>
   </head>
   <body>
     <load src="./partials/header.html" icon-path="img/sprite.svg#logo" />
@@ -22,6 +18,11 @@
     <load src="./partials/footer.html" />
 
     <script type="module" src="./main.js"></script>
+    <script
+      defer
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRqbfD4tRFZ-38qw05HcOWlWRQqoPfjYY"
+    ></script>
     <script type="module" async defer src="./js/maps_init.js"></script>
   </body>
 </html>
