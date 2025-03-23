@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vanilla App Template</title>
     <link rel="stylesheet" href="./css/styles.css" />
-    <script type="module" src="./js/maps.js"></script>
   </head>
   <body>
     <load src="./partials/header.html" icon-path="img/sprite.svg#logo" />
@@ -17,8 +16,8 @@
 
     <load src="./partials/footer.html" />
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRqbfD4tRFZ-38qw05HcOWlWRQqoPfjYY"></script>
-    <script type="module" src="./js/maps_init.js"></script>
+    <script defer type="module" src="./js/maps_init.js"></script>
+    <script type="module" src="./js/maps.js"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

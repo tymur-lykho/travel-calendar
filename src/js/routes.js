@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_KEY = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
+import { config } from './config';
 
 export async function getRoutes(origin, destination) {
   const url = 'https://routes.googleapis.com/directions/v2:computeRoutes';
@@ -38,7 +37,7 @@ export async function getRoutes(origin, destination) {
     const response = await axios.post(url, requestData, {
       headers: {
         'Content-Type': 'application/json',
-        'X-Goog-Api-Key': API_KEY,
+        'X-Goog-Api-Key': config.GM_API_KEY,
         'X-Goog-FieldMask':
           'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline',
       },
