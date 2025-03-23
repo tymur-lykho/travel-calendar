@@ -5,6 +5,7 @@ import {
   getMyGeolocation,
   getCurrentLocation,
   drawRoute,
+  redrawMarkerWindow,
 } from './js/maps';
 import './js/resizer.js';
 import { getRoutes } from './js/routes.js';
@@ -37,10 +38,16 @@ findMeBtn.addEventListener('click', async () => {
 //   }
 // });
 
+marker.addListener('dragstart', () => {
+  infoWindow.close();
+});
+
 marker.addListener('dragend', async () => {
   const position = marker.position;
   let info = `<p>Pin dropped at: ${position.lat}, ${position.lng}</p>`;
   let encodedPolyline = null;
+
+  redrawMarkerWindow(marker, '<div class="loader"></div>');
 
   try {
     const originCoordinate = await getCurrentLocation();
@@ -48,6 +55,7 @@ marker.addListener('dragend', async () => {
 
     if (!data.routes || data.routes.length === 0) {
       info += '<b>No routes found</b>';
+      redrawMarkerWindow(marker, info);
     } else {
       const route = data.routes[0];
 
@@ -74,9 +82,7 @@ marker.addListener('dragend', async () => {
       }
     }
 
-    infoWindow.close();
-    infoWindow.setContent(info);
-    infoWindow.open(marker.map, marker);
+    redrawMarkerWindow(marker, info);
 
     google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
       const btn = document.getElementById('btn-draw-route');
@@ -93,7 +99,7 @@ marker.addListener('dragend', async () => {
   } catch (error) {
     console.error('Error fetching route:', error);
     info += '<b>Error retrieving route data</b>';
-    infoWindow.setContent(info);
-    infoWindow.open(marker.map, marker);
+    await getMyGeolocation();
+    redrawMarkerWindow(marker, info);
   }
 });

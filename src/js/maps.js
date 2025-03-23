@@ -1,17 +1,14 @@
-const { Map } = await google.maps.importLibrary('maps');
-const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
-const { geometry } = await google.maps.importLibrary('geometry');
-
-let map, infoWindow;
+let map, marker, infoWindow;
 
 export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
+  const { Map } = await google.maps.importLibrary('maps');
   map = await new Map(document.getElementById('map'), {
     zoom: 5,
     center: position,
     mapId: 'DEMO_MAP_ID',
   });
 
-  const marker = initMarker(map, position, true, 'Draggable marker');
+  marker = await initMarker(map, position, true, 'Draggable marker');
 
   infoWindow = new google.maps.InfoWindow();
 
@@ -54,6 +51,8 @@ export async function getCurrentLocation() {
 }
 
 export async function drawRoute(map, encodedPolyline) {
+  const { geometry } = await google.maps.importLibrary('geometry');
+
   const path = google.maps.geometry.encoding.decodePath(encodedPolyline);
 
   const routePath = new google.maps.Polyline({
@@ -78,7 +77,9 @@ export function getRandomPlace() {
   };
 }
 
-function initMarker(map, position, draggable, title) {
+async function initMarker(map, position, draggable, title) {
+  const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+
   return new AdvancedMarkerElement({
     map: map,
     position: position,
@@ -99,4 +100,10 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
       : "Error: Your browser doesn't support geolocation."
   );
   infoWindow.open(map);
+}
+
+export function redrawMarkerWindow(marker, markup) {
+  infoWindow.close();
+  infoWindow.setContent(markup);
+  infoWindow.open(marker.map, marker);
 }
