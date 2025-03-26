@@ -1,16 +1,34 @@
-let map, marker, infoWindow;
+import { refs } from './refs';
+import { getRandomArbitrary } from './utils';
+import { handleClickOnMap, handleLocationError } from './handlers';
+import { initMarker, initSavedMarkers, userMarkers } from './marker';
+import peopleIcon from '../img/emoji-people.svg';
+
+import { obj } from '../main';
+
+let isMapInitialized = false;
 
 export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
-  const { Map } = await google.maps.importLibrary('maps');
-  map = await new Map(document.getElementById('map'), {
+  if (isMapInitialized) return obj; // Avoid reinitialization
+  isMapInitialized = true;
+
+  const { Map, InfoWindow } = await google.maps.importLibrary('maps');
+  const map = await new Map(refs.mapArea, {
     zoom: 5,
     center: position,
     mapId: 'DEMO_MAP_ID',
   });
+  const marker = await initMarker(position, true, 'Your location', peopleIcon);
 
-  marker = await initMarker(map, position, true, 'Draggable marker');
+  const infoWindow = new InfoWindow();
 
-  infoWindow = new google.maps.InfoWindow();
+  initSavedMarkers();
+
+  map.addListener('click', event => {
+    handleClickOnMap(event, userMarkers);
+  });
+
+  console.log('Init Map');
 
   return { map, marker, infoWindow };
 }
@@ -19,12 +37,13 @@ export async function getMyGeolocation() {
   try {
     const pos = await getCurrentLocation();
 
-    infoWindow.setPosition(pos);
-    infoWindow.setContent('Location found.');
-    infoWindow.open(map);
-    map.setCenter(pos);
+    obj.infoWindow.setPosition(pos);
+    obj.infoWindow.setContent('Your current location');
+    obj.infoWindow.open(map);
+
+    obj.map.setCenter(pos);
   } catch (error) {
-    handleLocationError(true, infoWindow, map.getCenter());
+    handleLocationError(true, obj.infoWindow, map.getCenter());
   }
 }
 
@@ -50,60 +69,9 @@ export async function getCurrentLocation() {
   });
 }
 
-export async function drawRoute(map, encodedPolyline) {
-  const { geometry } = await google.maps.importLibrary('geometry');
-
-  const path = google.maps.geometry.encoding.decodePath(encodedPolyline);
-
-  const routePath = new google.maps.Polyline({
-    path: path,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 4,
-  });
-
-  routePath.setMap(map);
-}
-
-export function markerUpdate(marker, position) {
-  marker.position = position;
-}
-
 export function getRandomPlace() {
   return {
-    lat: Number(getRandomArbitrary(-85.05, 85.05)),
+    lat: Number(getRandomArbitrary(-64.05, 85.05)),
     lng: Number(getRandomArbitrary(-180, 180)),
   };
-}
-
-async function initMarker(map, position, draggable, title) {
-  const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
-
-  return new AdvancedMarkerElement({
-    map: map,
-    position: position,
-    gmpDraggable: draggable,
-    title: title,
-  });
-}
-
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  infoWindow.setPosition(pos);
-  infoWindow.setContent(
-    browserHasGeolocation
-      ? 'Error: The Geolocation service failed.'
-      : "Error: Your browser doesn't support geolocation."
-  );
-  infoWindow.open(map);
-}
-
-export function redrawMarkerWindow(marker, markup) {
-  infoWindow.close();
-  infoWindow.setContent(markup);
-  infoWindow.open(marker.map, marker);
 }

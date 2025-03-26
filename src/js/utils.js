@@ -10,3 +10,19 @@ export function convertS(s) {
 
   return { days, hours, minutes, seconds };
 }
+
+export function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+export function dataToJSON(data) {
+  return JSON.stringify(data);
+}
+
+export function jsonToData(jsonData) {
+  try {
+    return JSON.parse(jsonData);
+  } catch (error) {
+    console.log('Parse error :', error);
+  }
+}

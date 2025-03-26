@@ -1,7 +1,5 @@
 import { config } from './config';
 
-console.log(config.GM_API_KEY);
-
 (g => {
   var h,
     a,

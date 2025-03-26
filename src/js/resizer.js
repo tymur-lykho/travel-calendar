@@ -1,10 +1,11 @@
-const resizer = document.querySelector('.resizer');
-const leftColumn = resizer.previousElementSibling;
-const rightColumn = resizer.nextElementSibling;
+import { refs } from './refs';
+
+// const refs.resizer = document.querySelector('.resizer');
+const leftColumn = refs.resizer.previousElementSibling;
 
 let isResizing = false;
 
-resizer.addEventListener('mousedown', event => {
+refs.resizer.addEventListener('mousedown', event => {
   isResizing = true;
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
