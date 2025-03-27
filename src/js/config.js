@@ -1,3 +1,4 @@
 export const config = {
-  GM_API_KEY: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
+  GM_API_KEY:
+    import.meta.env.VITE_GHUB_API_KEY || import.meta.env.VITE_ENV_API_KEY,
 };

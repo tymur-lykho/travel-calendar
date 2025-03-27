@@ -7,6 +7,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      VITE_GHUB_API_KEY: ${{ secrets.GOOGLE_MAP_API_KEY }}
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
