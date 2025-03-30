@@ -9,16 +9,21 @@ import { obj } from '../main';
 let isMapInitialized = false;
 
 export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
-  if (isMapInitialized) return obj; // Avoid reinitialization
-  isMapInitialized = true;
-
   const { Map, InfoWindow } = await google.maps.importLibrary('maps');
+
   const map = await new Map(refs.mapArea, {
-    zoom: 5,
+    zoom: 16,
     center: position,
     mapId: 'DEMO_MAP_ID',
   });
-  const marker = await initMarker(position, true, 'Your location', peopleIcon);
+
+  const marker = await initMarker(
+    map,
+    position,
+    true,
+    'Your location',
+    peopleIcon
+  );
 
   const infoWindow = new InfoWindow();
 

@@ -6,6 +6,7 @@ import { obj } from '../main';
 export let userMarkers = [];
 
 export async function initMarker(
+  map,
   position,
   draggable,
   title,
@@ -26,12 +27,12 @@ export async function initMarker(
   }
 
   const marker = new AdvancedMarkerElement({
-    map: obj.map,
+    map: map,
     position: position,
     gmpDraggable: draggable,
     gmpClickable: true,
     content: glyphSvgPinElement?.element,
-    title: title,
+    title,
   });
 
   marker.addListener('dragstart', () => {

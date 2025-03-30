@@ -1,28 +1,14 @@
 import { getCurrentLocation, initMap } from './js/maps';
 import './js/resizer.js';
 import { refs } from './js/refs';
-import {
-  handleClickFindMeBtn,
-  handleClickOnMap,
-  handleClickRandomBtn,
-  handleMarkerDragend,
-} from './js/handlers.js';
-import { initMarker, initSavedMarkers, userMarkers } from './js/marker.js';
-// import { initInfoWindow } from './js/infoWindow.js';
+import { handleClickFindMeBtn, handleClickRandomBtn } from './js/handlers.js';
 
 export let obj = {};
 
-let isAppInitialized = false;
-
 async function initApp() {
-  if (isAppInitialized) return;
-  isAppInitialized = true;
-
-  console.trace('Init App');
-  const { map, marker, infoWindow } = await initMap(await getCurrentLocation());
-  obj = { map, marker, infoWindow };
-
-  // initSavedMarkers();
+  console.log('Init App');
+  const currentPosition = await getCurrentLocation();
+  const obj = await initMap(currentPosition);
 
   refs.randomBtn.addEventListener('click', handleClickRandomBtn);
 
@@ -37,4 +23,4 @@ async function initApp() {
   // });
 }
 
-initApp();
+window.onload = initApp;
