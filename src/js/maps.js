@@ -1,9 +1,11 @@
 import { refs } from './refs';
 import { getRandomArbitrary } from './utils';
 import { handleClickOnMap, handleLocationError } from './handlers';
-import { initMarker, initSavedMarkers, userMarkers } from './marker';
+import { userMarkers } from './marker';
+import { config } from './config';
 
 import { globals } from './globals';
+import axios from 'axios';
 
 export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
   const { Map } = await google.maps.importLibrary('maps');
@@ -25,13 +27,14 @@ export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
 
 export async function getMyGeolocation() {
   try {
-    const pos = await getCurrentLocation();
+    const currentPosition = await getCurrentLocation();
 
-    globals.infoWindow.setPosition(pos);
+    globals.infoWindow.setPosition(currentPosition);
     globals.infoWindow.setContent('Your current location');
     globals.infoWindow.open(globals.map);
-
-    globals.map.setCenter(pos);
+    globals.marker.position = currentPosition;
+    globals.map.setCenter(currentPosition);
+    globals.map.setZoom(15);
   } catch (error) {
     handleLocationError(true, globals.infoWindow, globals.map.getCenter());
   }
@@ -57,6 +60,13 @@ export async function getCurrentLocation() {
       }
     );
   });
+}
+
+export async function getLocation(query) {
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${config.GM_API_KEY}`;
+
+  const { data } = await axios(url);
+  return data.results;
 }
 
 export function getRandomPlace() {

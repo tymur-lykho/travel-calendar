@@ -1,12 +1,19 @@
 import { saveToLS } from './localStorage';
-import { getCurrentLocation, getMyGeolocation, getRandomPlace } from './maps';
-import { initMarker, markerUpdate, redrawMarkerWindow } from './marker';
+import {
+  getCurrentLocation,
+  getLocation,
+  getMyGeolocation,
+  getRandomPlace,
+} from './maps';
+import { initMarker, markerUpdate, updateMarkerWindow } from './marker';
 import { drawRoute, getRoutes } from './routes';
-import { convertS } from './utils';
+import { convertMetersToKmeters, convertS } from './utils';
 import { globals } from './globals';
 import randomIcon from '../img/random-marker.svg';
+import { renderFindLocation } from './render';
 
 let randomMarker;
+let findLocationMarker;
 
 export async function handleClickRandomBtn() {
   const newPosition = getRandomPlace();
@@ -26,7 +33,6 @@ export async function handleClickRandomBtn() {
 
 export async function handleClickFindMeBtn() {
   await getMyGeolocation();
-  globals.map.setZoom(15);
 }
 
 export function handleLocationError(browserHasGeolocation, pos) {
@@ -43,34 +49,42 @@ export async function handleMarkerDragend(marker) {
   const position = marker.position;
   let info = `<p>Pin dropped at: ${position.lat}, ${position.lng}</p>`;
   let encodedPolyline = null;
-  redrawMarkerWindow(marker, '<div class="loader"></div>');
+
+  updateMarkerWindow(marker, '', true);
+
   try {
-    const originCoordinate = await getCurrentLocation();
+    const originCoordinate = globals.marker.position;
     const data = await getRoutes(originCoordinate, position);
+
     if (!data.routes || data.routes.length === 0) {
       info += '<b>No routes found</b>';
-      redrawMarkerWindow(marker, info);
     } else {
       const route = data.routes[0];
-      const routeDistance =
-        route.distanceMeters > 1000
-          ? route.distanceMeters / 1000
-          : route.distanceMeters;
+      const { kkms, kms, meters } = convertMetersToKmeters(
+        route.distanceMeters
+      );
       const { days, hours, minutes } = convertS(
         Number.parseInt(route.duration)
       );
       encodedPolyline = route.polyline?.encodedPolyline || null;
-      info += `<p>Approximate route length: ${routeDistance} ${
-        routeDistance > 1000 ? 'km' : 'm'
-      }</p>
-  			<p>Approximate route time: ${days} d., ${hours} h., ${minutes} min. </p>`;
+
+      info += `<p>Approximate route length: ${kkms || ''} ${
+        kms || ''
+      } km., ${meters} meters</p>
+  			<p>Approximate route time:
+        ${days ? days + ' d.,' : ''}
+        ${hours ? hours + ' h.,' : ''}
+        ${minutes} min. </p>`;
+
       if (encodedPolyline) {
         info += `<button id="btn-draw-route" type="button">Draw route</button>`;
       } else {
         info += '<b>No route polyline found</b>';
       }
     }
-    redrawMarkerWindow(marker, info);
+
+    updateMarkerWindow(marker, info);
+
     google.maps.event.addListenerOnce(globals.infoWindow, 'domready', () => {
       const btn = document.getElementById('btn-draw-route');
       if (btn) {
@@ -87,7 +101,7 @@ export async function handleMarkerDragend(marker) {
     console.error('Error fetching route:', error);
     info += '<b>Error retrieving route data</b>';
     await getMyGeolocation();
-    redrawMarkerWindow(marker, info);
+    updateMarkerWindow(marker, info);
   }
 }
 
@@ -96,4 +110,42 @@ export async function handleClickOnMap(event, userMarkers) {
   initMarker(position, true, 'New User Marker');
   userMarkers.push(position);
   saveToLS('user-markers', userMarkers);
+}
+
+export function handleMyMarkerDragend() {
+  const position = globals.marker.position;
+  updateMarkerWindow(globals.marker, '', true);
+  saveToLS('user-location-marker', position);
+  updateMarkerWindow(globals.marker, 'New your current location. Saved!');
+}
+
+export async function handleSubmitLocationForm(event) {
+  event.preventDefault();
+  const form = event.target;
+  const query = form.elements['location-text'].value.trim();
+  console.log(query);
+  const data = await getLocation(query);
+  console.log(data);
+  renderFindLocation(data);
+}
+
+export async function handleClickOnFindLocation(event) {
+  const item = event.target.closest('.location-item');
+  if (item) {
+    const itemLocation = JSON.parse(item.dataset?.location || '{}');
+    const itemName = item.dataset?.name;
+    if (itemLocation && itemName) {
+      console.log('Clicked on:', itemLocation, itemName);
+      globals.map.setCenter(itemLocation);
+      if (!findLocationMarker) {
+        findLocationMarker = await initMarker(itemLocation, true, itemName);
+      }
+
+      markerUpdate(findLocationMarker, itemLocation);
+    } else {
+      console.warn('Missing data attributes on the clicked element.');
+    }
+  } else {
+    console.warn('Invalid click: No valid list item found.');
+  }
 }

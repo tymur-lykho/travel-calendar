@@ -11,6 +11,17 @@ export function convertS(s) {
   return { days, hours, minutes, seconds };
 }
 
+export function convertMetersToKmeters(m) {
+  const km = 1000;
+  const kkm = 1000000;
+
+  const kkms = Math.floor(m / kkm);
+  const kms = Math.floor((m % kkm) / km);
+  const meters = m % km;
+
+  return { kkms, kms, meters };
+}
+
 export function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }

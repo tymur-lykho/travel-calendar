@@ -8,7 +8,8 @@ export async function initMarker(
   position,
   draggable,
   title,
-  markerImage = undefined
+  markerImage = undefined,
+  defaultMarker = true
 ) {
   const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
     'marker'
@@ -37,10 +38,11 @@ export async function initMarker(
     globals.infoWindow.close();
   });
 
-  marker.addListener('dragend', () => handleMarkerDragend(marker));
+  if (!!defaultMarker) {
+    marker.addListener('dragend', () => handleMarkerDragend(marker));
 
-  marker.addListener('gmp-click', () => handleMarkerDragend(marker));
-
+    marker.addListener('gmp-click', () => handleMarkerDragend(marker));
+  }
   console.log('Init Marker');
 
   return marker;
@@ -50,16 +52,20 @@ export function markerUpdate(marker, position) {
   marker.position = position;
 }
 
-export function redrawMarkerWindow(marker, markup) {
-  globals.infoWindow.close();
-  globals.infoWindow.setContent(markup);
-  globals.infoWindow.open(marker.map, marker);
+export function updateMarkerWindow(marker, content, showLoader = false) {
+  const loaderHTML = '<div class="loader"></div>';
+  const finalContent = showLoader ? loaderHTML : content;
+
+  globals.infoWindow.setContent(finalContent);
+  globals.infoWindow.open(globals.map, marker);
 }
 
 export function initSavedMarkers() {
-  const savedMarkers = getDataFromLS('user-markers');
-  savedMarkers.forEach(markerData => {
-    initMarker(markerData, false, 'User saved marker');
+  userMarkers = getDataFromLS('user-markers');
+  userMarkers.forEach(markerData => {
+    initMarker(markerData, true, 'User saved marker');
   });
+  const userLocation = getDataFromLS('user-location-marker');
+  globals.marker.position = userLocation;
   console.log('Init SavedMarkers');
 }

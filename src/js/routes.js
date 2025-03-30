@@ -70,3 +70,7 @@ export async function drawRoute(encodedPolyline) {
 
   routePath.setMap(globals.map);
 }
+
+export function removeRoute(routePath) {
+  routePath.setMap(null);
+}
