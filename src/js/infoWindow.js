@@ -1,4 +1,5 @@
-// export function initInfoWindow(InfoWindow) {
-//   console.log('Init InfoWindow');
-//   return new InfoWindow();
-// }
+export async function initInfoWindow() {
+  const { InfoWindow } = await google.maps.importLibrary('maps');
+  console.log('Init InfoWindow');
+  return new InfoWindow();
+}

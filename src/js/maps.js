@@ -2,14 +2,11 @@ import { refs } from './refs';
 import { getRandomArbitrary } from './utils';
 import { handleClickOnMap, handleLocationError } from './handlers';
 import { initMarker, initSavedMarkers, userMarkers } from './marker';
-import peopleIcon from '../img/emoji-people.svg';
 
-import { obj } from '../main';
-
-let isMapInitialized = false;
+import { globals } from './globals';
 
 export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
-  const { Map, InfoWindow } = await google.maps.importLibrary('maps');
+  const { Map } = await google.maps.importLibrary('maps');
 
   const map = await new Map(refs.mapArea, {
     zoom: 16,
@@ -17,38 +14,26 @@ export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
     mapId: 'DEMO_MAP_ID',
   });
 
-  const marker = await initMarker(
-    map,
-    position,
-    true,
-    'Your location',
-    peopleIcon
-  );
-
-  const infoWindow = new InfoWindow();
-
-  initSavedMarkers();
-
   map.addListener('click', event => {
     handleClickOnMap(event, userMarkers);
   });
 
   console.log('Init Map');
 
-  return { map, marker, infoWindow };
+  return map;
 }
 
 export async function getMyGeolocation() {
   try {
     const pos = await getCurrentLocation();
 
-    obj.infoWindow.setPosition(pos);
-    obj.infoWindow.setContent('Your current location');
-    obj.infoWindow.open(map);
+    globals.infoWindow.setPosition(pos);
+    globals.infoWindow.setContent('Your current location');
+    globals.infoWindow.open(globals.map);
 
-    obj.map.setCenter(pos);
+    globals.map.setCenter(pos);
   } catch (error) {
-    handleLocationError(true, obj.infoWindow, map.getCenter());
+    handleLocationError(true, globals.infoWindow, globals.map.getCenter());
   }
 }
 

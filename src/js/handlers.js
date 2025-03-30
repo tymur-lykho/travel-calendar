@@ -3,19 +3,30 @@ import { getCurrentLocation, getMyGeolocation, getRandomPlace } from './maps';
 import { initMarker, markerUpdate, redrawMarkerWindow } from './marker';
 import { drawRoute, getRoutes } from './routes';
 import { convertS } from './utils';
+import { globals } from './globals';
+import randomIcon from '../img/random-marker.svg';
 
-import { obj } from '../main';
+let randomMarker;
 
-export function handleClickRandomBtn() {
+export async function handleClickRandomBtn() {
   const newPosition = getRandomPlace();
-  obj.map.setCenter(newPosition);
-  // initMarker(position, false, 'Random marker');
-  markerUpdate(obj.marker, newPosition);
+  globals.map.setCenter(newPosition);
+
+  if (!randomMarker) {
+    randomMarker = await initMarker(
+      newPosition,
+      false,
+      'Random marker',
+      randomIcon
+    );
+  }
+
+  markerUpdate(randomMarker, newPosition);
 }
 
 export async function handleClickFindMeBtn() {
   await getMyGeolocation();
-  obj.map.setZoom(15);
+  globals.map.setZoom(15);
 }
 
 export function handleLocationError(browserHasGeolocation, pos) {
@@ -60,7 +71,7 @@ export async function handleMarkerDragend(marker) {
       }
     }
     redrawMarkerWindow(marker, info);
-    google.maps.event.addListenerOnce(obj.infoWindow, 'domready', () => {
+    google.maps.event.addListenerOnce(globals.infoWindow, 'domready', () => {
       const btn = document.getElementById('btn-draw-route');
       if (btn) {
         btn.addEventListener('click', () => {

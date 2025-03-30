@@ -1,12 +1,10 @@
-// import { userMarkers } from '../main';
+import { globals } from './globals';
 import { handleMarkerDragend } from './handlers';
 import { getDataFromLS } from './localStorage';
-import { obj } from '../main';
 
 export let userMarkers = [];
 
 export async function initMarker(
-  map,
   position,
   draggable,
   title,
@@ -27,7 +25,7 @@ export async function initMarker(
   }
 
   const marker = new AdvancedMarkerElement({
-    map: map,
+    map: globals.map,
     position: position,
     gmpDraggable: draggable,
     gmpClickable: true,
@@ -36,7 +34,7 @@ export async function initMarker(
   });
 
   marker.addListener('dragstart', () => {
-    obj.infoWindow.close();
+    globals.infoWindow.close();
   });
 
   marker.addListener('dragend', () => handleMarkerDragend(marker));
@@ -53,17 +51,14 @@ export function markerUpdate(marker, position) {
 }
 
 export function redrawMarkerWindow(marker, markup) {
-  obj.infoWindow.close();
-  obj.infoWindow.setContent(markup);
-  obj.infoWindow.open(marker.map, marker);
+  globals.infoWindow.close();
+  globals.infoWindow.setContent(markup);
+  globals.infoWindow.open(marker.map, marker);
 }
 
 export function initSavedMarkers() {
   const savedMarkers = getDataFromLS('user-markers');
-  if (!savedMarkers || savedMarkers.length === 0) return; // Avoid unnecessary processing
-
-  userMarkers = savedMarkers;
-  userMarkers.forEach(markerData => {
+  savedMarkers.forEach(markerData => {
     initMarker(markerData, false, 'User saved marker');
   });
   console.log('Init SavedMarkers');

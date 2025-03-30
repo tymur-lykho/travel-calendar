@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { config } from './config';
-import { obj } from '../main';
+import { globals } from './globals';
 
 export async function getRoutes(origin, destination) {
   const url = 'https://routes.googleapis.com/directions/v2:computeRoutes';
@@ -68,5 +68,5 @@ export async function drawRoute(encodedPolyline) {
     strokeWeight: 4,
   });
 
-  routePath.setMap(obj.map);
+  routePath.setMap(globals.map);
 }
