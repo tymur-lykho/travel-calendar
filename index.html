@@ -37,7 +37,17 @@
   </div>
   <div class="resizer"></div>
   <div class="column right">
-    <div>Notes</div>
+    <div>
+  <div class="add-location-form-wrapper">
+    <form method="get" id="add-location-form">
+      <label for="location-text">Enter location:</label>
+      <input type="text" name="location-text" id="location-text" required />
+      <button type="submit">Find</button>
+    </form>
+
+    <ul class="location-list" id="location-list"></ul>
+  </div>
+</div>
 
   </div>
 </div>
