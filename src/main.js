@@ -9,7 +9,7 @@ import {
   handleSubmitLocationForm,
   handleClickOnFindLocation,
   handleClickCloseLocationListBtn,
-  handleClickCreateRoute,
+  handleSubmitCreateRoute,
 } from './js/handlers.js';
 import { globals } from './js/globals';
 import peopleIcon from './img/emoji-people.svg';
@@ -50,7 +50,7 @@ async function initApp() {
     handleClickCloseLocationListBtn
   );
 
-  refs.createRouteBtn.addEventListener('click', handleClickCreateRoute);
+  refs.createRouteForm.addEventListener('submit', handleSubmitCreateRoute);
 }
 
 window.onload = initApp;

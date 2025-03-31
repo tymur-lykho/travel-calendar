@@ -179,7 +179,11 @@ export function handleClickCloseLocationListBtn() {
   refs.locationList.innerHTML = '';
 }
 
-export function handleClickCreateRoute() {
-  const userRoute = createRoute(getDataFromLS('user-location-marker'));
+export function handleSubmitCreateRoute(event) {
+  event.preventDefault();
+  const currentPosition = getDataFromLS('user-location-marker');
+  const form = event.target;
+  const routeName = form.elements['route-name'].value.trim();
+  createRoute(currentPosition, routeName);
   renderUserRoutes(userRoutes);
 }

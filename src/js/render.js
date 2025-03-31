@@ -24,7 +24,7 @@ export function renderUserRoutes(userRoutes) {
   const markup = userRoutes
     .map(userRoute => {
       return `
-			<h5>${userRoute}</h5>
+			<h5>${userRoute.title}</h5>
 			<ol
       class="user-route draggable-container"
       id="user-route"

@@ -79,7 +79,7 @@ export function removeRoute(routePath) {
   routePath.setMap(null);
 }
 
-export function createRoute(startPoint) {
+export function createRoute(startPoint, routeName) {
   const routePoint = {
     place: {
       title: 'Start Point',
@@ -88,8 +88,8 @@ export function createRoute(startPoint) {
     description: 'You start your route on this point',
     pointNumber: 0,
   };
-  const userRoute = [];
-  userRoute.push(routePoint);
+  const userRoute = { title: routeName, route: [] };
+  userRoute.route.push(routePoint);
   userRoutes.push(userRoute);
   saveToLS('user-routes', userRoutes);
   return userRoute;

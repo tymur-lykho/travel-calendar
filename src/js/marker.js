@@ -62,10 +62,14 @@ export function updateMarkerWindow(marker, content, showLoader = false) {
 
 export function initSavedMarkers() {
   userMarkers = getDataFromLS('user-markers');
-  userMarkers.forEach(markerData => {
-    initMarker(markerData, true, 'User saved marker');
-  });
+  if (userMarkers) {
+    userMarkers.forEach(markerData => {
+      initMarker(markerData, true, 'User saved marker');
+    });
+  }
   const userLocation = getDataFromLS('user-location-marker');
-  globals.marker.position = userLocation;
+  if (userLocation) {
+    globals.marker.position = userLocation;
+  }
   console.log('Init SavedMarkers');
 }
