@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { config } from './config';
 import { globals } from './globals';
+import { getDataFromLS, saveToLS } from './localStorage';
+import { renderUserRoutes } from './render';
+
+export let userRoutes = [];
 
 export async function getRoutes(origin, destination) {
   const url = 'https://routes.googleapis.com/directions/v2:computeRoutes';
@@ -73,4 +77,40 @@ export async function drawRoute(encodedPolyline) {
 
 export function removeRoute(routePath) {
   routePath.setMap(null);
+}
+
+export function createRoute(startPoint) {
+  const routePoint = {
+    place: {
+      title: 'Start Point',
+      coordinate: startPoint,
+    },
+    description: 'You start your route on this point',
+    pointNumber: 0,
+  };
+  const userRoute = [];
+  userRoute.push(routePoint);
+  userRoutes.push(userRoute);
+  saveToLS('user-routes', userRoutes);
+  return userRoute;
+}
+
+export function addPointToRoute(point, userRoute) {
+  userRoutes = getDataFromLS('user-routes');
+  const routePoint = {
+    place: {
+      title: 'point.title',
+      coordinate: 'point.position',
+    },
+    description: 'Added point to route',
+  };
+  routePoint.pointNumber += 1;
+  userRoute.push(routePoint);
+  saveToLS('user-routes', userRoutes);
+}
+
+export function initUserRoutes() {
+  userRoutes = getDataFromLS('user-routes') || [];
+  renderUserRoutes(userRoutes);
+  console.log('Init User Routes');
 }

@@ -9,11 +9,13 @@ import {
   handleSubmitLocationForm,
   handleClickOnFindLocation,
   handleClickCloseLocationListBtn,
+  handleClickCreateRoute,
 } from './js/handlers.js';
 import { globals } from './js/globals';
 import peopleIcon from './img/emoji-people.svg';
 import { initInfoWindow } from './js/infoWindow';
 import { initMarker, initSavedMarkers, userMarkers } from './js/marker';
+import { initUserRoutes } from './js/routes.js';
 
 async function initApp() {
   console.log('Init App');
@@ -21,6 +23,7 @@ async function initApp() {
   const currentPosition = await getCurrentLocation();
 
   globals.map = await initMap(currentPosition);
+
   globals.marker = await initMarker(
     currentPosition,
     true,
@@ -31,6 +34,8 @@ async function initApp() {
   globals.infoWindow = await initInfoWindow();
 
   initSavedMarkers();
+
+  initUserRoutes();
 
   globals.marker.addListener('dragend', handleMyMarkerDragend);
   globals.marker.addListener('gmp-click', handleMyMarkerDragend);
@@ -44,6 +49,8 @@ async function initApp() {
     'click',
     handleClickCloseLocationListBtn
   );
+
+  refs.createRouteBtn.addEventListener('click', handleClickCreateRoute);
 }
 
 window.onload = initApp;

@@ -8,4 +8,7 @@ export const refs = {
   addLocationForm: document.getElementById('add-location-form'),
   locationList: document.getElementById('location-list'),
   closeLocationListBtn: document.getElementById('btn-close-location-list'),
+  createRouteBtn: document.getElementById('create-route-btn'),
+  userRoutesList: document.getElementById('user-routes'),
+  userRouteItemList: document.getElementById('user-route'),
 };

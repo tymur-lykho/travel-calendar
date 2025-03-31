@@ -1,4 +1,4 @@
-import { saveToLS } from './localStorage';
+import { getDataFromLS, saveToLS } from './localStorage';
 import {
   getCurrentLocation,
   getLocation,
@@ -6,12 +6,12 @@ import {
   getRandomPlace,
 } from './maps';
 import { initMarker, markerUpdate, updateMarkerWindow } from './marker';
-import { drawRoute, getRoutes } from './routes';
+import { createRoute, drawRoute, getRoutes, userRoutes } from './routes';
 import { convertMetersToKmeters, convertS } from './utils';
 import { globals } from './globals';
 import randomIcon from '../img/random-marker.svg';
 import findPlaceIcon from '../img/travel-explore.svg';
-import { renderFindLocation } from './render';
+import { renderFindLocation, renderUserRoutes } from './render';
 import { refs } from './refs';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
@@ -90,9 +90,10 @@ export async function handleMarkerDragend(marker) {
     updateMarkerWindow(marker, info);
 
     google.maps.event.addListenerOnce(globals.infoWindow, 'domready', () => {
-      const btn = document.getElementById('btn-draw-route');
-      if (btn) {
-        btn.addEventListener('click', () => {
+      const drawRouteBtn = document.getElementById('btn-draw-route');
+      const addToRouteBtn = document.getElementById('btn-add-to-route');
+      if (drawRouteBtn & createRouteBtn & addToRouteBtn) {
+        drawRouteBtn.addEventListener('click', () => {
           if (encodedPolyline) {
             drawRoute(encodedPolyline);
           } else {
@@ -176,4 +177,9 @@ export async function handleClickOnFindLocation(event) {
 export function handleClickCloseLocationListBtn() {
   refs.closeLocationListBtn.setAttribute('hidden', true);
   refs.locationList.innerHTML = '';
+}
+
+export function handleClickCreateRoute() {
+  const userRoute = createRoute(getDataFromLS('user-location-marker'));
+  renderUserRoutes(userRoutes);
 }
