@@ -51,8 +51,12 @@
 
     <ul class="location-list" id="location-list"></ul>
   </div>
+  <form method="get" id="create-route-form">
+    <label for="route-name">Enter route title:</label>
+    <input type="text" name="route-name" id="route-name" required />
 
-  <button id="create-route-btn" type="button">Create new route</button>
+    <button type="submit">Create new route</button>
+  </form>
   <h2>Your routes:</h2>
   <div class="user-routes-wrapper" id="user-routes">
     <ol
