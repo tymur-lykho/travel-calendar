@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vanilla App Template</title>
     <script type="module" crossorigin src="/travel-calendar/index.js"></script>
-    <link rel="modulepreload" crossorigin href="/travel-calendar/assets/vendor-C19taMLP.js">
-    <link rel="stylesheet" crossorigin href="/travel-calendar/assets/index-8yYU8Igf.css">
+    <link rel="modulepreload" crossorigin href="/travel-calendar/assets/vendor-B_OA0gJ3.js">
+    <link rel="stylesheet" crossorigin href="/travel-calendar/assets/vendor-B7Z2fuxW.css">
+    <link rel="stylesheet" crossorigin href="/travel-calendar/assets/index-D8H4Ro1R.css">
   </head>
   <body>
     <header class="header">
@@ -44,8 +45,50 @@
       <input type="text" name="location-text" id="location-text" required />
       <button type="submit">Find</button>
     </form>
+    <button class="close-btn" id="btn-close-location-list" type="button" hidden>
+      Close
+    </button>
 
     <ul class="location-list" id="location-list"></ul>
+  </div>
+
+  <button id="create-route-btn" type="button">Create new route</button>
+  <h2>Your routes:</h2>
+  <div class="user-routes-wrapper" id="user-routes">
+    <ol
+      class="user-route draggable-container"
+      id="user-route"
+      style="border: 1px solid red"
+    >
+      <li
+        class="user-route-item draggable"
+        id="user-route-item"
+        draggable="true"
+      >
+        item 1
+      </li>
+      <li
+        class="user-route-item draggable"
+        id="user-route-item"
+        draggable="true"
+      >
+        item 2
+      </li>
+      <li
+        class="user-route-item draggable"
+        id="user-route-item"
+        draggable="true"
+      >
+        item 3
+      </li>
+      <li
+        class="user-route-item draggable"
+        id="user-route-item"
+        draggable="true"
+      >
+        item 4
+      </li>
+    </ol>
   </div>
 </div>
 
