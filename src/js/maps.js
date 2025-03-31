@@ -64,9 +64,20 @@ export async function getCurrentLocation() {
 
 export async function getLocation(query) {
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${config.GM_API_KEY}`;
-
-  const { data } = await axios(url);
-  return data.results;
+  try {
+    const { data } = await axios(url);
+    if (data.results && data.results.length !== 0) {
+      return data.results;
+    } else {
+      throw new Error('Place not found!');
+    }
+  } catch (error) {
+    iziToast.error({
+      title: 'Get location error!',
+      position: 'topRight',
+      message: error,
+    });
+  }
 }
 
 export function getRandomPlace() {

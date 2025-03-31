@@ -7,4 +7,5 @@ export const refs = {
   addLocationbtn: document.getElementById('btn-add-location'),
   addLocationForm: document.getElementById('add-location-form'),
   locationList: document.getElementById('location-list'),
+  closeLocationListBtn: document.getElementById('btn-close-location-list'),
 };

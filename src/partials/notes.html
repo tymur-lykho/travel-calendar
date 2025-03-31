@@ -5,7 +5,30 @@
       <input type="text" name="location-text" id="location-text" required />
       <button type="submit">Find</button>
     </form>
+    <button class="close-btn" id="btn-close-location-list" type="button" hidden>
+      Close
+    </button>
 
     <ul class="location-list" id="location-list"></ul>
   </div>
+
+  <h2>Your routes:</h2>
+  <ol
+    class="user-routes draggable-container"
+    id="user-routes"
+    style="border: 1px solid red"
+  >
+    <li class="user-route-item draggable" id="user-route-item" draggable="true">
+      item 1
+    </li>
+    <li class="user-route-item draggable" id="user-route-item" draggable="true">
+      item 2
+    </li>
+    <li class="user-route-item draggable" id="user-route-item" draggable="true">
+      item 3
+    </li>
+    <li class="user-route-item draggable" id="user-route-item" draggable="true">
+      item 4
+    </li>
+  </ol>
 </div>

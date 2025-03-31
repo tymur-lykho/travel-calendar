@@ -1,5 +1,6 @@
 import { getCurrentLocation, initMap } from './js/maps';
 import './js/resizer.js';
+import './js/drag-and-drop.js';
 import { refs } from './js/refs';
 import {
   handleClickFindMeBtn,
@@ -7,6 +8,7 @@ import {
   handleMyMarkerDragend,
   handleSubmitLocationForm,
   handleClickOnFindLocation,
+  handleClickCloseLocationListBtn,
 } from './js/handlers.js';
 import { globals } from './js/globals';
 import peopleIcon from './img/emoji-people.svg';
@@ -38,6 +40,10 @@ async function initApp() {
 
   refs.addLocationForm.addEventListener('submit', handleSubmitLocationForm);
   refs.locationList.addEventListener('click', handleClickOnFindLocation);
+  refs.closeLocationListBtn.addEventListener(
+    'click',
+    handleClickCloseLocationListBtn
+  );
 }
 
 window.onload = initApp;

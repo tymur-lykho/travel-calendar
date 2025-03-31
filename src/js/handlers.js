@@ -10,7 +10,11 @@ import { drawRoute, getRoutes } from './routes';
 import { convertMetersToKmeters, convertS } from './utils';
 import { globals } from './globals';
 import randomIcon from '../img/random-marker.svg';
+import findPlaceIcon from '../img/travel-explore.svg';
 import { renderFindLocation } from './render';
+import { refs } from './refs';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
 let randomMarker;
 let findLocationMarker;
@@ -123,10 +127,24 @@ export async function handleSubmitLocationForm(event) {
   event.preventDefault();
   const form = event.target;
   const query = form.elements['location-text'].value.trim();
-  console.log(query);
-  const data = await getLocation(query);
-  console.log(data);
-  renderFindLocation(data);
+  try {
+    if (query) {
+      const data = await getLocation(query);
+      if (data) {
+        renderFindLocation(data);
+        refs.closeLocationListBtn.removeAttribute('hidden');
+      }
+    } else {
+      throw new Error('Query Error');
+    }
+  } catch (error) {
+    iziToast.error({
+      title: 'Submit form error',
+      position: 'topRight',
+      message: error,
+    });
+  }
+  form.elements['location-text'].value = '';
 }
 
 export async function handleClickOnFindLocation(event) {
@@ -135,10 +153,15 @@ export async function handleClickOnFindLocation(event) {
     const itemLocation = JSON.parse(item.dataset?.location || '{}');
     const itemName = item.dataset?.name;
     if (itemLocation && itemName) {
-      console.log('Clicked on:', itemLocation, itemName);
       globals.map.setCenter(itemLocation);
       if (!findLocationMarker) {
-        findLocationMarker = await initMarker(itemLocation, true, itemName);
+        findLocationMarker = await initMarker(
+          itemLocation,
+          false,
+          itemName,
+          findPlaceIcon,
+          false
+        );
       }
 
       markerUpdate(findLocationMarker, itemLocation);
@@ -148,4 +171,9 @@ export async function handleClickOnFindLocation(event) {
   } else {
     console.warn('Invalid click: No valid list item found.');
   }
+}
+
+export function handleClickCloseLocationListBtn() {
+  refs.closeLocationListBtn.setAttribute('hidden', true);
+  refs.locationList.innerHTML = '';
 }
