@@ -70,3 +70,31 @@ export function renderUserRoutes(userRoutes) {
     btn.addEventListener('click', handleShowPointInMap);
   });
 }
+
+export function renderDialogForAddPointToRoute(userRoutes) {
+  const selectOptions = userRoutes
+    .map(route => {
+      return `<option value="${route.id}">${route.title}</option>`;
+    })
+    .join('');
+
+  const markup = `
+  	<label for="route-select">Оберіть маршрут:</label>
+		<select id="route-select" name="route">
+			${selectOptions}
+		</select>
+
+  	<button type="button" id="create-route-btn">Створити новий маршрут</button>
+
+		<label for="point-title">Назва точки:</label>
+		<input type="text" id="point-title" name="point-title" required />
+
+		<label for="point-description">Опис точки:</label>
+		<textarea id="point-description" name="point-description"></textarea>
+
+  	<button type="submit">Додати точку</button>
+	`;
+
+  refs.dialogForm.insertAdjacentHTML('beforeend', markup);
+  refs.dialog.showModal();
+}

@@ -1,6 +1,6 @@
 import { globals } from './globals';
 import { handleMarkerDragend } from './handlers';
-import { getDataFromLS } from './localStorage';
+import { getDataFromLS, saveToLS } from './localStorage';
 
 export let userMarkers = [];
 
@@ -72,4 +72,14 @@ export function initSavedMarkers() {
     globals.marker.position = userLocation;
   }
   console.log('Init SavedMarkers');
+}
+
+export function addUserMarker(pos) {
+  initMarker(pos, true, 'New User Marker');
+  if (!userMarkers) {
+    userMarkers = [pos];
+  } else {
+    userMarkers.push(pos);
+  }
+  saveToLS('user-markers', userMarkers);
 }

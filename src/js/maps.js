@@ -17,7 +17,7 @@ export async function initMap(position = { lat: -25.344, lng: 131.031 }) {
   });
 
   map.addListener('click', event => {
-    handleClickOnMap(event, userMarkers);
+    handleClickOnMap(event);
   });
 
   console.log('Init Map');

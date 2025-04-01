@@ -6,7 +6,13 @@ import {
   getRandomPlace,
   showPointOnMap,
 } from './maps';
-import { initMarker, markerUpdate, updateMarkerWindow } from './marker';
+import {
+  addUserMarker,
+  initMarker,
+  markerUpdate,
+  updateMarkerWindow,
+  userMarkers,
+} from './marker';
 import {
   createRoute,
   deleteUserRoute,
@@ -19,7 +25,11 @@ import { convertMetersToKmeters, convertS } from './utils';
 import { globals } from './globals';
 import randomIcon from '../img/random-marker.svg';
 import findPlaceIcon from '../img/travel-explore.svg';
-import { renderFindLocation, renderUserRoutes } from './render';
+import {
+  renderDialogForAddPointToRoute,
+  renderFindLocation,
+  renderUserRoutes,
+} from './render';
 import { refs } from './refs';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
@@ -59,7 +69,8 @@ export function handleLocationError(browserHasGeolocation, pos) {
 
 export async function handleMarkerDragend(marker) {
   const position = marker.position;
-  let info = `<p>Pin dropped at: ${position.lat}, ${position.lng}</p>`;
+  let info = `<p>Pin dropped at: ${position.lat}, ${position.lng}</p>
+  <button type="button" id="btn-add-to-route">Add to route</button>`;
   let encodedPolyline = null;
 
   updateMarkerWindow(marker, '', true);
@@ -100,7 +111,7 @@ export async function handleMarkerDragend(marker) {
     google.maps.event.addListenerOnce(globals.infoWindow, 'domready', () => {
       const drawRouteBtn = document.getElementById('btn-draw-route');
       const addToRouteBtn = document.getElementById('btn-add-to-route');
-      if (drawRouteBtn & createRouteBtn & addToRouteBtn) {
+      if (drawRouteBtn && addToRouteBtn) {
         drawRouteBtn.addEventListener('click', () => {
           if (encodedPolyline) {
             drawRoute(encodedPolyline);
@@ -108,6 +119,8 @@ export async function handleMarkerDragend(marker) {
             console.error('Cannot draw route: No encoded polyline available.');
           }
         });
+
+        addToRouteBtn.addEventListener('click', handleAddPointToRoute);
       }
     });
   } catch (error) {
@@ -118,11 +131,9 @@ export async function handleMarkerDragend(marker) {
   }
 }
 
-export async function handleClickOnMap(event, userMarkers) {
+export async function handleClickOnMap(event) {
   const position = event.latLng;
-  initMarker(position, true, 'New User Marker');
-  userMarkers.push(position);
-  saveToLS('user-markers', userMarkers);
+  addUserMarker(position);
 }
 
 export function handleMyMarkerDragend() {
@@ -217,4 +228,22 @@ export function handleShowPointInMap(event) {
   const pointData = getPointData(pointId);
   showPointOnMap(pointData.coordinate);
   console.log(pointId);
+}
+
+export function handleAddPointToRoute() {
+  renderDialogForAddPointToRoute(userRoutes);
+}
+
+export function handleCloseDialog() {
+  refs.dialog.close();
+}
+
+export function handleSubmitAddPointToRoute(event) {
+  event.preventDefault();
+  const form = event.target;
+  const selectRoute = form.elements['route'].value;
+  const pointTitle = form.elements['point-title'].value.trim();
+  const pointDescription = form.elements['point-description'].value.trim();
+
+  console.log(selectRoute, pointTitle, pointDescription);
 }

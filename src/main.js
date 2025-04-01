@@ -10,6 +10,8 @@ import {
   handleClickOnFindLocation,
   handleClickCloseLocationListBtn,
   handleSubmitCreateRoute,
+  handleCloseDialog,
+  handleSubmitAddPointToRoute,
 } from './js/handlers.js';
 import { globals } from './js/globals';
 import peopleIcon from './img/emoji-people.svg';
@@ -51,6 +53,9 @@ async function initApp() {
   );
 
   refs.createRouteForm.addEventListener('submit', handleSubmitCreateRoute);
+
+  refs.dialog.addEventListener('submit', handleSubmitAddPointToRoute);
+  refs.dialogCloseBtn.addEventListener('click', handleCloseDialog);
 }
 
 window.onload = initApp;

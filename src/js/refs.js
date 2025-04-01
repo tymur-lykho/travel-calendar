@@ -11,4 +11,7 @@ export const refs = {
   createRouteForm: document.getElementById('create-route-form'),
   userRoutesList: document.getElementById('user-routes'),
   userRouteItemList: document.getElementById('user-route'),
+  dialog: document.querySelector('dialog'),
+  dialogCloseBtn: document.getElementById('dialog-close-btn'),
+  dialogForm: document.getElementById('dialog-form'),
 };
