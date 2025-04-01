@@ -4,9 +4,17 @@ import {
   getLocation,
   getMyGeolocation,
   getRandomPlace,
+  showPointOnMap,
 } from './maps';
 import { initMarker, markerUpdate, updateMarkerWindow } from './marker';
-import { createRoute, drawRoute, getRoutes, userRoutes } from './routes';
+import {
+  createRoute,
+  deleteUserRoute,
+  drawRoute,
+  getPointData,
+  getRoutes,
+  userRoutes,
+} from './routes';
 import { convertMetersToKmeters, convertS } from './utils';
 import { globals } from './globals';
 import randomIcon from '../img/random-marker.svg';
@@ -186,4 +194,27 @@ export function handleSubmitCreateRoute(event) {
   const routeName = form.elements['route-name'].value.trim();
   createRoute(currentPosition, routeName);
   renderUserRoutes(userRoutes);
+}
+
+export function handleOpenRoute(event) {
+  const routeId = event.target.dataset.routeid;
+  console.log(routeId);
+}
+
+export function handleEditRoute(event) {
+  const routeId = event.target.dataset.routeid;
+  console.log(routeId);
+}
+
+export function handleDeleteRoute(event) {
+  const routeId = event.target.dataset.routeid;
+  const deletedRoutes = deleteUserRoute(routeId);
+  console.log(deletedRoutes);
+}
+
+export function handleShowPointInMap(event) {
+  const pointId = event.target.dataset.pointid;
+  const pointData = getPointData(pointId);
+  showPointOnMap(pointData.coordinate);
+  console.log(pointId);
 }

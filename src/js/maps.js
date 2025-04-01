@@ -86,3 +86,16 @@ export function getRandomPlace() {
     lng: Number(getRandomArbitrary(-180, 180)),
   };
 }
+
+export function showPointOnMap(coordinates, pointData = {}) {
+  globals.map.setCenter(coordinates);
+  globals.infoWindow.setPosition(coordinates);
+  if (pointData.length) {
+    globals.infoWindow.setContent(pointData.title);
+  } else {
+    globals.infoWindow.setContent(
+      `Poin coordinates: LAT:${coordinates.lat}, LNG: ${coordinates.lng}`
+    );
+  }
+  globals.infoWindow.open(globals.map);
+}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { config } from './config';
 import { globals } from './globals';
-import { getDataFromLS, saveToLS } from './localStorage';
+import { getDataFromLS, removeFromLS, saveToLS } from './localStorage';
 import { renderUserRoutes } from './render';
 
 export let userRoutes = [];
@@ -80,19 +80,36 @@ export function removeRoute(routePath) {
 }
 
 export function createRoute(startPoint, routeName) {
+  const routeId =
+    userRoutes.length !== 0 ? userRoutes[userRoutes.length - 1].id + 1 : 0;
   const routePoint = {
     place: {
+      id: String(routeId) + '-' + String(0),
       title: 'Start Point',
       coordinate: startPoint,
     },
     description: 'You start your route on this point',
     pointNumber: 0,
   };
-  const userRoute = { title: routeName, route: [] };
+  const userRoute = { id: routeId, title: routeName, route: [] };
   userRoute.route.push(routePoint);
   userRoutes.push(userRoute);
   saveToLS('user-routes', userRoutes);
   return userRoute;
+}
+
+export function deleteUserRoute(routeId) {
+  let deletedRoute;
+  if (userRoutes.length === 1) {
+    deletedRoute = userRoutes[0];
+    userRoutes = [];
+    removeFromLS('user-routes');
+  } else {
+    deletedRoute = userRoutes.splice(routeId, 1);
+    saveToLS('user-routes', userRoutes);
+  }
+  renderUserRoutes(userRoutes);
+  return deletedRoute;
 }
 
 export function addPointToRoute(point, userRoute) {
@@ -113,4 +130,16 @@ export function initUserRoutes() {
   userRoutes = getDataFromLS('user-routes') || [];
   renderUserRoutes(userRoutes);
   console.log('Init User Routes');
+}
+
+export function getPointData(pointId) {
+  const route = userRoutes.find(userRoute =>
+    userRoute.route.some(point => point.place.id === pointId)
+  );
+
+  const pointData = route
+    ? route.route.find(point => point.place.id === pointId).place
+    : null;
+
+  return pointData;
 }
